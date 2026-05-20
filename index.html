@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WeatherFlow — Beautiful Weather App</title>
+  <meta name="description" content="A stunning weather app with real-time weather updates, forecasts, and beautiful animations." />
+  <meta name="theme-color" content="#1b6ca8" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="weather-sunny" data-theme="dark">
+
+  <!-- Animated Background Particles -->
+  <div class="bg-animation">
+    <div class="particle" id="p1"></div>
+    <div class="particle" id="p2"></div>
+    <div class="particle" id="p3"></div>
+    <div class="particle" id="p4"></div>
+    <div class="particle" id="p5"></div>
+    <div class="particle" id="p6"></div>
+  </div>
+
+  <!-- Lightning effect for storms -->
+  <div class="lightning-overlay" id="lightningOverlay"></div>
+
+  <!-- Rain Effect Overlay -->
+  <div class="rain-container" id="rainContainer"></div>
+
+  <!-- Snow Effect Overlay -->
+  <div class="snow-container" id="snowContainer"></div>
+
+  <!-- Sun/Moon Decoration -->
+  <div class="celestial-body" id="celestialBody"></div>
+  <div class="celestial-ring" id="celestialRing"></div>
+
+  <!-- Stars (night mode) -->
+  <div class="stars-container" id="starsContainer"></div>
+
+  <!-- Main App Container -->
+  <div class="app-container">
+
+    <!-- Header -->
+    <header class="app-header">
+      <div class="logo">
+        <span class="logo-icon">🌊</span>
+        <span class="logo-text">WeatherFlow</span>
+      </div>
+      <div class="header-right">
+        <button class="icon-btn" id="notifBtn" title="Enable Weather Alerts">🔔</button>
+        <button class="icon-btn sound-btn" id="soundBtn" title="Toggle Weather Sounds">🔊</button>
+        <button class="icon-btn" id="themeBtn" title="Toggle Light/Dark Mode">🌙</button>
+        <button class="unit-toggle" id="unitToggle" title="Toggle °C / °F">°C</button>
+        <div class="time-display" id="timeDisplay">--:--</div>
+      </div>
+    </header>
+
+    <!-- Search Bar -->
+    <div class="search-section">
+      <div class="search-wrapper">
+        <div class="search-icon">🔍</div>
+        <input
+          type="text"
+          id="searchInput"
+          class="search-input"
+          placeholder="Search city... (e.g. Mumbai, London, Delhi)"
+          autocomplete="off"
+        />
+        <button class="search-btn" id="searchBtn">Search</button>
+        <button class="location-btn" id="locationBtn" title="Use my location">📍</button>
+      </div>
+      <div class="suggestions-box" id="suggestionsBox"></div>
+    </div>
+
+    <!-- Main Weather Card -->
+    <div class="main-card glass-card">
+      <div class="main-card-left">
+        <div class="city-name" id="cityName">Mumbai</div>
+        <div class="country-name" id="countryName">India 🇮🇳</div>
+        <div class="date-display" id="dateDisplay">Loading...</div>
+        <!-- World Clock -->
+        <div class="city-clock" id="cityClock">
+          <span class="city-clock-label">Local Time</span>
+          <span class="city-clock-time" id="cityClockTime">--:-- --</span>
+        </div>
+        <div class="weather-description" id="weatherDesc">Partly Cloudy</div>
+        <div class="feels-like" id="feelsLike">Feels like 32°C</div>
+      </div>
+      <div class="main-card-right">
+        <div class="weather-icon-large" id="weatherIconLarge">☀️</div>
+        <div class="temperature-display">
+          <span class="temp-value" id="tempValue">34</span>
+          <span class="temp-unit" id="tempUnit">°C</span>
+        </div>
+        <div class="temp-range">
+          <span class="temp-high" id="tempHigh">↑ 36°</span>
+          <span class="temp-low" id="tempLow">↓ 28°</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="stats-row">
+      <div class="stat-card glass-card" id="statHumidity">
+        <div class="stat-icon">💧</div>
+        <div class="stat-value" id="humidityVal">72%</div>
+        <div class="stat-label">Humidity</div>
+        <div class="stat-bar"><div class="stat-bar-fill" id="humidityBar" style="width:72%"></div></div>
+      </div>
+      <div class="stat-card glass-card">
+        <div class="stat-icon">💨</div>
+        <div class="stat-value" id="windVal">18 km/h</div>
+        <div class="stat-label">Wind Speed</div>
+        <div class="wind-direction" id="windDir">
+          <div class="compass">
+            <div class="compass-needle" id="compassNeedle"></div>
+          </div>
+          <span id="windDirText">NW</span>
+        </div>
+      </div>
+      <div class="stat-card glass-card">
+        <div class="stat-icon">🌡️</div>
+        <div class="stat-value" id="pressureVal">1013 hPa</div>
+        <div class="stat-label">Pressure</div>
+        <div class="pressure-gauge">
+          <div class="gauge-arc"></div>
+          <div class="gauge-needle" id="gaugeNeedle"></div>
+        </div>
+      </div>
+      <div class="stat-card glass-card">
+        <div class="stat-icon">👁️</div>
+        <div class="stat-value" id="visibilityVal">10 km</div>
+        <div class="stat-label">Visibility</div>
+        <div class="visibility-dots" id="visibilityDots"></div>
+      </div>
+    </div>
+
+    <!-- Temperature Chart -->
+    <div class="section-title">Temperature Trend (24h)</div>
+    <div class="chart-card glass-card">
+      <canvas id="tempChart" height="120"></canvas>
+    </div>
+
+    <!-- Hourly Forecast -->
+    <div class="section-title">Hourly Forecast</div>
+    <div class="hourly-scroll glass-card">
+      <div class="hourly-container" id="hourlyContainer"></div>
+    </div>
+
+    <!-- 5-Day Forecast -->
+    <div class="section-title">5-Day Forecast</div>
+    <div class="forecast-grid" id="forecastGrid"></div>
+
+    <!-- UV & Sunrise/Sunset Row -->
+    <div class="extra-row">
+      <div class="extra-card glass-card">
+        <div class="extra-title">☀️ UV Index</div>
+        <div class="uv-meter">
+          <div class="uv-track">
+            <div class="uv-fill" id="uvFill"></div>
+            <div class="uv-thumb" id="uvThumb"></div>
+          </div>
+          <div class="uv-labels">
+            <span>Low</span><span>Moderate</span><span>High</span><span>Extreme</span>
+          </div>
+        </div>
+        <div class="uv-value" id="uvValue">UV 6 — High</div>
+      </div>
+      <div class="extra-card glass-card">
+        <div class="extra-title">🌅 Sun Times</div>
+        <div class="sun-arc-container">
+          <svg class="sun-arc" viewBox="0 0 200 110" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="arcGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" style="stop-color:#f97316"/>
+                <stop offset="50%" style="stop-color:#fbbf24"/>
+                <stop offset="100%" style="stop-color:#f97316"/>
+              </linearGradient>
+            </defs>
+            <path d="M 10 100 Q 100 10 190 100" stroke="url(#arcGrad)" stroke-width="3" fill="none" stroke-dasharray="5,3" opacity="0.5"/>
+            <circle class="sun-dot" id="sunDot" cx="100" cy="10" r="8" fill="#fbbf24"/>
+          </svg>
+          <div class="sun-times-row">
+            <div class="sun-time"><span class="sun-time-label">🌅 Sunrise</span><span class="sun-time-val" id="sunriseVal">6:12 AM</span></div>
+            <div class="sun-time"><span class="sun-time-label">🌇 Sunset</span><span class="sun-time-val" id="sunsetVal">7:48 PM</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="extra-card glass-card">
+        <div class="extra-title">🌬️ Air Quality</div>
+        <div class="aqi-display">
+          <div class="aqi-circle" id="aqiCircle">
+            <span class="aqi-number" id="aqiNumber">72</span>
+            <span class="aqi-label-small">AQI</span>
+          </div>
+          <div class="aqi-info">
+            <div class="aqi-status" id="aqiStatus">Moderate</div>
+            <div class="aqi-desc" id="aqiDesc">Acceptable air quality</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- World Clocks Row -->
+    <div class="section-title">🌍 World Clocks</div>
+    <div class="world-clocks-row glass-card" id="worldClocksRow"></div>
+
+    <!-- Map Section -->
+    <div class="section-title">📍 City Location</div>
+    <div class="map-card glass-card" id="mapCard">
+      <div class="map-inner" id="mapInner">
+        <div class="map-pin-container" id="mapPinContainer">
+          <div class="map-pin-pulse"></div>
+          <div class="map-pin">📍</div>
+        </div>
+        <div class="map-grid"></div>
+        <div class="map-label" id="mapLabel">Mumbai, India</div>
+        <div class="map-coords" id="mapCoords">18.98°N, 72.83°E</div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <div class="footer-top">
+        <div class="pwa-install" id="pwaInstall" style="display:none">
+          <button class="install-btn" id="installBtn">📲 Install App</button>
+        </div>
+      </div>
+      <p>WeatherFlow • Built with ❤️ • Data updates every 10 minutes</p>
+      <p class="footer-note">Demo mode — Add your OpenWeatherMap API key in app.js for live data</p>
+    </footer>
+
+  </div>
+
+  <!-- Sound Engine (hidden audio elements) -->
+  <div id="soundEngine" style="display:none"></div>
+
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loader-content">
+      <div class="loader-spinner"></div>
+      <div class="loader-text">Fetching weather...</div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
